@@ -1,8 +1,8 @@
 Provides bookmarking ability for folders/directories in bash.
 
-To install, put bookmarks.sh somewhere such as ~/bin, then source it 
+To install, put bashmarks.sh somewhere such as ~/bin, then source it 
 in your .bashrc file (or other bash startup file):
-  source ~/bin/bookmarks.sh
+  source ~/bin/bashmarks.sh
 
 To bookmark a folder, simply go to that folder, then bookmark it like so:
   bookmark foo
