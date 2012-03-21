@@ -1,7 +1,7 @@
-# Bashmarks is a simple set of bash functions that allows you to bookmark 
+# Bashmarks is a simple set of bash functions that allows you to bookmark
 # folders in the command-line.
-# 
-# To install, put bashmarks.sh somewhere such as ~/bin, then source it 
+#
+# To install, put bashmarks.sh somewhere such as ~/bin, then source it
 # in your .bashrc file (or other bash startup file):
 #   source ~/bin/bashmarks.sh
 #
@@ -15,10 +15,10 @@
 #
 # To see a list of bookmarks:
 #   bookmarksshow
-# 
+#
 # Tab completion works, to go to the shoobie bookmark:
 #   go sho[tab]
-# 
+#
 # Your bookmarks are stored in the ~/.bookmarks file
 
 bookmarks_file=~/.bookmarks
@@ -37,18 +37,36 @@ bookmark (){
   else
     bookmark="`pwd`|$bookmark_name" # Store the bookmark as folder|name
 
-    if [[ -z `grep "$bookmark" $bookmarks_file` ]]; then
+    if [[ -z `grep "|$bookmark_name" $bookmarks_file` ]]; then
       echo $bookmark >> $bookmarks_file
       echo "Bookmark '$bookmark_name' saved"
     else
-      echo "Bookmark already existed"
+      echo "Bookmark already exists by that name"
     fi
   fi
-} 
+}
+
+# Delete the named bookmark from the list
+bookmarkdelete (){
+  bookmark_name=$1
+
+  if [[ -z $bookmark_name ]]; then
+    echo 'Invalid name, please provide the name of the bookmark to delete.'
+  else
+    bookmark=`grep "|$bookmark_name$" "$bookmarks_file"`
+
+    if [[ -z $bookmark ]]; then
+      echo 'Invalid name, please provide a valid bookmark name.'
+    else
+      cat $bookmarks_file | grep -v "|$bookmark_name$" > $bookmarks_file
+      echo "Bookmark '$bookmark_name' deleted"
+    fi
+  fi
+}
 
 # Show a list of the bookmarks
 bookmarksshow (){
-  cat ~/.bookmarks | awk '{ printf "%-40s%-40s%s\n",$1,$2,$3}' FS=\|
+  cat $bookmarks_file | awk '{ printf "%-40s%-40s%s\n",$1,$2,$3}' FS=\|
 }
 
 go(){
@@ -64,7 +82,7 @@ go(){
     echo '  bookmark foo'
   else
     dir=`echo "$bookmark" | cut -d\| -f1`
-    cd "$dir" 
+    cd "$dir"
   fi
 }
 
@@ -73,4 +91,4 @@ _go_complete(){
   cat $bookmarks_file | cut -d\| -f2 | grep "$2.*"
 }
 
-complete -C _go_complete -o default go 
+complete -C _go_complete -o default go
