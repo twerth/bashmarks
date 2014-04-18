@@ -73,10 +73,11 @@ bookmarkdelete (){
     if [[ -z $bookmark ]]; then
       echo 'Invalid name, please provide a valid bookmark name.'
     else
-      cat $bookmarks_file | grep -v "|$bookmark_name$" > $bookmarks_file
+      cat $bookmarks_file | grep -v "|$bookmark_name$" $bookmarks_file > bookmarks_temp && mv bookmarks_temp $bookmarks_file
       echo "Bookmark '$bookmark_name' deleted"
     fi
   fi
+}
 
 # Show a list of the bookmarks
 bookmarksshow (){
