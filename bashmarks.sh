@@ -41,7 +41,22 @@ bookmark (){
       echo $bookmark >> $bookmarks_file
       echo "Bookmark '$bookmark_name' saved"
     else
-      echo "Bookmark already exists by that name"
+      echo "Bookmark '$bookmark_name' already exists. Replace it? (y or n)"
+      while read replace
+      do
+        if [[ $replace = "y" ]]; then
+          # Delete existing bookmark
+          sed "/.*|$bookmark_name/d" $bookmarks_file > ~/.tmp && mv ~/.tmp $bookmarks_file
+          # Save new bookmark
+          echo $bookmark >> $bookmarks_file
+          echo "Bookmark '$bookmark_name' saved"
+          break
+        elif [[ $replace = "n" ]]; then
+          break
+        else
+          echo "Please type 'y' or 'n'"
+        fi
+      done
     fi
   fi
 }
@@ -62,7 +77,6 @@ bookmarkdelete (){
       echo "Bookmark '$bookmark_name' deleted"
     fi
   fi
-}
 
 # Show a list of the bookmarks
 bookmarksshow (){
